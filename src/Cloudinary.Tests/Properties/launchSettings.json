@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Development": {
+      "environmentVariables": {
+        "CloudName": "CloudName",
+        "ApiSecret": "ApiSecret",
+        "ApiKey": "ApiKey",
+        "ApiBaseAddress": ""
+      }
+    }
+  }
+}
