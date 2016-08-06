@@ -8,7 +8,6 @@ Cloudinary
 It still needs a work and a tidy up - I've hacked something together to get unit & integration tests passing and the basics working
 
 - All xunit tests should pass now
-- Async methods are not enabled
 
 ## Setup
 To run xunit tests, edit the 'launchSettings.json' file and add Cloudinary account information
