@@ -1,6 +1,21 @@
 Cloudinary
 ==========
 
+
+.Net Core implementation of the CloudinaryAPI library
+
+## Project Status
+It still needs a work and a tidy up - I've hacked something together to get unit & integration tests passing and the basics working
+
+- All xunit tests should pass now
+- Async methods are not enabled
+
+## Setup
+To run xunit tests, edit the 'launchSettings.json' file and add Cloudinary account information
+
+
+# Introduction
+
 Cloudinary is a cloud service that offers a solution to a web application's entire image management pipeline. 
 
 Easily upload images to the cloud. Automatically perform smart image resizing, cropping and conversion without installing any complex software. 
