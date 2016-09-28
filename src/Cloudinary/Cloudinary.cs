@@ -256,7 +256,7 @@ namespace CloudinaryDotNet
         /// </summary>
         public GetFoldersResult SubFolders(string folder)
         {
-            if (String.IsNullOrEmpty(folder))
+            if (string.IsNullOrEmpty(folder))
                 throw new ArgumentException("folder must be set! Please use RootFolders() to get list of folders in root!");
 
             using (HttpWebResponse response = m_api.Call(
@@ -277,7 +277,7 @@ namespace CloudinaryDotNet
         /// <exception cref="System.ArgumentException">publicId can't be null</exception>
         public string DownloadPrivate(string publicId, bool? attachment = null, string format = "", string type = "")
         {
-            if (String.IsNullOrEmpty(publicId))
+            if (string.IsNullOrEmpty(publicId))
                 throw new ArgumentException("publicId");
 
             UrlBuilder urlBuilder = new UrlBuilder(
@@ -290,13 +290,13 @@ namespace CloudinaryDotNet
 
             parameters.Add("public_id", publicId);
 
-            if (!String.IsNullOrEmpty(format))
+            if (!string.IsNullOrEmpty(format))
                 parameters.Add("format", format);
 
             if (attachment != null)
                 parameters.Add("attachment", (bool)attachment ? "true" : "false");
 
-            if (!String.IsNullOrEmpty(type))
+            if (!string.IsNullOrEmpty(type))
                 parameters.Add("type", type);
 
             return GetDownloadUrl(urlBuilder, parameters);
@@ -311,7 +311,7 @@ namespace CloudinaryDotNet
         /// <exception cref="System.ArgumentException">Tag should be specified!</exception>
         public string DownloadZip(string tag, Transformation transform)
         {
-            if (String.IsNullOrEmpty(tag))
+            if (string.IsNullOrEmpty(tag))
                 throw new ArgumentException("Tag should be specified!");
 
             UrlBuilder urlBuilder = new UrlBuilder(
@@ -1211,13 +1211,9 @@ namespace CloudinaryDotNet
         /// <param name="directUpload">Whether to reference additional scripts that are necessary for uploading files directly from browser.</param>
         /// <param name="dir">Override location of js files (default: ~/Scripts).</param>
         /// <returns></returns>
-#if NET40
-        public System.Web.IHtmlString GetCloudinaryJsConfig(bool directUpload = false, string dir = "")
-#else
         public string GetCloudinaryJsConfig(bool directUpload = false, string dir = "")
-#endif
         {
-            if (String.IsNullOrEmpty(dir))
+            if (string.IsNullOrEmpty(dir))
                 dir = "/Scripts";
 
             StringBuilder sb = new StringBuilder(1000);
@@ -1245,7 +1241,7 @@ namespace CloudinaryDotNet
                     new JProperty("cdn_subdomain",m_api.CSubDomain)
                 });
 
-            if (!String.IsNullOrEmpty(m_api.PrivateCdn))
+            if (!string.IsNullOrEmpty(m_api.PrivateCdn))
                 cloudinaryParams.Add("secure_distribution", m_api.PrivateCdn);
 
             sb.AppendLine("<script type='text/javascript'>");
@@ -1254,11 +1250,7 @@ namespace CloudinaryDotNet
             sb.AppendLine(");");
             sb.AppendLine("</script>");
 
-#if NET40
-            return new System.Web.HtmlString(sb.ToString());
-#else
             return sb.ToString();
-#endif
         }
 
         private static void AppendScriptLine(StringBuilder sb, string dir, string script)
