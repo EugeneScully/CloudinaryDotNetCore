@@ -1,5 +1,9 @@
 ﻿namespace CloudinaryDotNet
 {
+    /// <summary>
+    /// Copy of basic rectangle from System.Drawing
+    /// </summary>
+    /// <remarks>System.Drawing is not available in .net core.</remarks>
     public struct Rectangle
     {
         public Rectangle(
