@@ -11,7 +11,6 @@ namespace CloudinaryDotNet
     internal class RequestState : IDisposable
     {
         #region Properties
-        // This class stores the State of the request.
         private readonly HttpWebRequest _request;
         private HttpWebResponse _response;
         private Stream _streamResponse;
@@ -39,12 +38,20 @@ namespace CloudinaryDotNet
             _responseDone.Set();
         }
 
+        /// <summary>
+        /// Abort the request
+        /// </summary>
         public void Abort()
         {
             _responseDone.Set();
             _streamDone.Set();
         }
 
+        /// <summary>
+        /// Wait for the request stream
+        /// </summary>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
         public Stream WaitForStream(int timeout)
         {
             if (timeout > 0)

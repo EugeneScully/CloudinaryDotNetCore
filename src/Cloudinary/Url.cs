@@ -258,11 +258,7 @@ namespace CloudinaryDotNet
         /// </summary>
         /// <param name="source">A Cloudinary public ID or file name or a reference to a resource.</param>
         /// <param name="keyValuePairs">Array of strings in form of "key=value".</param>
-#if NET40
-        public IHtmlString BuildImageTag(string source, params string[] keyValuePairs)
-#else
         public string BuildImageTag(string source, params string[] keyValuePairs)
-#endif
         {
             return BuildImageTag(source, new StringDictionary(keyValuePairs));
         }
@@ -272,11 +268,7 @@ namespace CloudinaryDotNet
         /// </summary>
         /// <param name="source">A Cloudinary public ID or file name or a reference to a resource.</param>
         /// <param name="dict">Additional parameters.</param>
-#if NET40
-        public IHtmlString BuildImageTag(string source, StringDictionary dict = null)
-#else
         public string BuildImageTag(string source, StringDictionary dict = null)
-#endif
         {
             if (dict == null)
                 dict = new StringDictionary();
@@ -313,11 +305,7 @@ namespace CloudinaryDotNet
 
             sb.Append("/>");
 
-#if NET40
-            return new HtmlString(sb.ToString());
-#else
             return sb.ToString();
-#endif
         }
 
         #endregion
@@ -329,11 +317,7 @@ namespace CloudinaryDotNet
         /// </summary>
         /// <param name="source">A Cloudinary public ID or file name or a reference to a resource.</param>
         /// <param name="keyValuePairs">Array of strings in form of "key=value".</param>
-#if NET40
-        public IHtmlString BuildVideoTag(string source, params string[] keyValuePairs)
-#else
         public string BuildVideoTag(string source, params string[] keyValuePairs)
-#endif
         {
             return BuildVideoTag(source, new StringDictionary(keyValuePairs));
         }
@@ -343,18 +327,14 @@ namespace CloudinaryDotNet
         /// </summary>
         /// <param name="source">A Cloudinary public ID or file name or a reference to a resource.</param>
         /// <param name="dict">Additional parameters.</param>
-#if NET40
-        public IHtmlString BuildVideoTag(string source, StringDictionary dict = null)
-#else
         public string BuildVideoTag(string source, StringDictionary dict = null)
-#endif
         {
             if (dict == null)
                 dict = new StringDictionary();
 
             source = VIDEO_EXTENSION_RE.Replace(source, "", 1);
 
-            if (String.IsNullOrEmpty(m_resourceType))
+            if (string.IsNullOrEmpty(m_resourceType))
                 m_resourceType = "video";
 
             var sourceTypes = m_sourceTypes;
@@ -363,7 +343,7 @@ namespace CloudinaryDotNet
 
             var posterUrl = FinalizePosterUrl(source);
 
-            if (!String.IsNullOrEmpty(posterUrl))
+            if (!string.IsNullOrEmpty(posterUrl))
                 dict.Add("poster", posterUrl);
 
             var sb = new StringBuilder("<video");
@@ -416,11 +396,7 @@ namespace CloudinaryDotNet
 
             sb.Append("</video>");
 
-#if NET40
-            return new HtmlString(sb.ToString());
-#else
             return sb.ToString();
-#endif
         }
 
         private void AppendVideoSources(StringBuilder sb, string source, string sourceType)
@@ -468,7 +444,7 @@ namespace CloudinaryDotNet
             }
             else if (m_posterSource != null)
             {
-                if (!String.IsNullOrEmpty(m_posterSource))
+                if (!string.IsNullOrEmpty(m_posterSource))
                     posterUrl = Clone().Format("jpg").BuildUrl(m_posterSource);
             }
             else
@@ -941,68 +917,5 @@ namespace CloudinaryDotNet
 
             base.Query = string.Join("&", pairs);
         }
-    }
-
-    public static class Crc32
-    {
-        static uint[] table;
-
-        public static uint ComputeChecksum(byte[] bytes)
-        {
-            uint crc = 0xffffffff;
-            for (int i = 0; i < bytes.Length; ++i)
-            {
-                byte index = (byte)(((crc) & 0xff) ^ bytes[i]);
-                crc = (uint)((crc >> 8) ^ table[index]);
-            }
-            return ~crc;
-        }
-
-        public static byte[] ComputeChecksumBytes(byte[] bytes)
-        {
-            return BitConverter.GetBytes(ComputeChecksum(bytes));
-        }
-
-        static Crc32()
-        {
-            uint poly = 0xedb88320;
-            table = new uint[256];
-            uint temp = 0;
-            for (uint i = 0; i < table.Length; ++i)
-            {
-                temp = i;
-                for (int j = 8; j > 0; --j)
-                {
-                    if ((temp & 1) == 1)
-                    {
-                        temp = (uint)((temp >> 1) ^ poly);
-                    }
-                    else
-                    {
-                        temp >>= 1;
-                    }
-                }
-                table[i] = temp;
-            }
-        }
-    }
-
-    class CSource
-    {
-        public CSource(string source)
-        {
-            SourceToSign = Source = source;
-        }
-
-        public static CSource operator +(CSource src, string value)
-        {
-            src.Source += value;
-            src.SourceToSign += value;
-
-            return src;
-        }
-
-        public string Source;
-        public string SourceToSign;
     }
 }
