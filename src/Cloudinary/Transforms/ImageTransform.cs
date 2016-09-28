@@ -204,6 +204,5 @@ namespace CloudinaryDotNet
             Add("if", "end");
             return Chain();
         }
-
     }
 }
