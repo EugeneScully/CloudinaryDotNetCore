@@ -11,7 +11,6 @@ using System.Text.RegularExpressions;
 using CloudinaryDotNet.Actions;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
-using System.Threading;
 
 namespace CloudinaryDotNet
 {
@@ -480,7 +479,7 @@ namespace CloudinaryDotNet
 
         public string BuildCallbackUrl(string path = "")
         {
-            if (String.IsNullOrEmpty(path))
+            if (string.IsNullOrEmpty(path))
                 path = "/Content/cloudinary_cors.html";
 
             if (Regex.IsMatch(path.ToLower(), "^https?:/.*"))
@@ -503,11 +502,7 @@ namespace CloudinaryDotNet
         /// Builds HTML form
         /// </summary>
         /// <returns>HTML form</returns>
-#if NET40
-        public IHtmlString BuildUnsignedUploadForm(string field, string preset, IDictionary<string, object> parameters = null, IDictionary<string, string> htmlOptions = null)
-#else
         public string BuildUnsignedUploadForm(string field, string preset, SortedDictionary<string, object> parameters = null, Dictionary<string, string> htmlOptions = null)
-#endif
         {
             if (parameters == null)
                 parameters = new SortedDictionary<string, object>();
@@ -522,11 +517,7 @@ namespace CloudinaryDotNet
         /// Builds HTML form
         /// </summary>
         /// <returns>HTML form</returns>
-#if NET40
-        public IHtmlString BuildUploadForm(string field, string resourceType, IDictionary<string, object> parameters = null, IDictionary<string, string> htmlOptions = null)
-#else
         public string BuildUploadForm(string field, string resourceType, SortedDictionary<string, object> parameters = null, Dictionary<string, string> htmlOptions = null)
-#endif
         {
             if (htmlOptions == null)
                 htmlOptions = new Dictionary<string, string>();
@@ -565,11 +556,7 @@ namespace CloudinaryDotNet
 
             builder.Append("'/>");
 
-#if NET40
-            return new HtmlString(builder.ToString());
-#else
             return builder.ToString();
-#endif
         }
 
         /// <summary>
@@ -581,10 +568,8 @@ namespace CloudinaryDotNet
         {
             StringBuilder signBase = new StringBuilder(String.Join("&", parameters
                 .Where(pair => pair.Value != null)
-                .Select(pair => String.Format("{0}={1}", pair.Key,
-                    pair.Value is IEnumerable<string>
-                    ? String.Join(",", ((IEnumerable<string>)pair.Value).ToArray())
-                    : pair.Value.ToString()))
+                .Select(pair => string.Format("{0}={1}", pair.Key,
+                    pair.Value is IEnumerable<string> ? string.Join(",", ((IEnumerable<string>)pair.Value).ToArray()) : pair.Value.ToString()))
                 .ToArray()));
 
             signBase.Append(Account.ApiSecret);
@@ -716,7 +701,7 @@ namespace CloudinaryDotNet
             writer.Write("\r\n");
         }
 
-        private void WriteLine(StreamWriter writer, string format, Object val)
+        private void WriteLine(StreamWriter writer, string format, object val)
         {
             writer.Write(format, val);
             writer.Write("\r\n");
@@ -742,74 +727,5 @@ namespace CloudinaryDotNet
         POST,
         /// <summary>PUT</summary>
         PUT
-    }
-
-    /// <summary>
-    /// Class to track the status of a request
-    /// </summary>
-    internal class RequestState : IDisposable
-    {
-        // This class stores the State of the request.
-        private readonly HttpWebRequest _request;
-        private HttpWebResponse _response;
-        public Stream _streamResponse;
-        private readonly ManualResetEvent _streamDone = new ManualResetEvent(false);
-        private readonly ManualResetEvent _responseDone = new ManualResetEvent(false);
-
-        public RequestState(HttpWebRequest request)
-        {
-            _request = request;
-            _streamResponse = null;
-        }
-
-        public HttpWebRequest Request { get { return _request; } }
-
-        public void SetRequestStream(Stream stream)
-        {
-            _streamResponse = stream;
-            _streamDone.Set();
-        }
-
-        public void SetResponse(HttpWebResponse response)
-        {
-            _response = response;
-            _responseDone.Set();
-        }
-
-        public void Abort()
-        {
-            _responseDone.Set();
-            _streamDone.Set();
-        }
-
-        public Stream WaitForStream(int timeout)
-        {
-            if (timeout > 0)
-            {
-                if (!_streamDone.WaitOne(timeout))
-                    throw new WebException("Timeout waiting for request stream", WebExceptionStatus.Timeout);
-            }
-            else
-                _streamDone.WaitOne();
-            return _streamResponse;
-        }
-
-        public HttpWebResponse WaitForResponse(int timeout)
-        {
-            if (timeout > 0)
-            {
-                if (!_responseDone.WaitOne(timeout))
-                    throw new WebException("Timeout waiting for response", WebExceptionStatus.Timeout);
-            }
-            else
-                _responseDone.WaitOne();
-            return _response;
-        }
-
-        public void Dispose()
-        {
-            _streamDone.Dispose();
-            _responseDone.Dispose();
-        }
     }
 }
