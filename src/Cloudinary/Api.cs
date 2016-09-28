@@ -321,11 +321,6 @@ namespace CloudinaryDotNet
             //    ? USER_AGENT
             //    : string.Format("{0} {1}", UserPlatform, USER_AGENT);
 
-            //if (Timeout > 0)
-            //{
-            //    request.Timeout = Timeout;
-            //}
-
             RequestState currentRequestState = new RequestState(request);
 
             try
@@ -346,7 +341,7 @@ namespace CloudinaryDotNet
 
                     request.BeginGetRequestStream(new AsyncCallback(RequestStreamCallback), currentRequestState);
 
-                    using (Stream requestStream = currentRequestState.WaitForStream(Timeout))
+                    using (Stream requestStream = currentRequestState.WaitForRequestStream(Timeout))
                     {
                         using (StreamWriter writer = new StreamWriter(requestStream))
                         {
@@ -404,7 +399,7 @@ namespace CloudinaryDotNet
 
             try
             {
-                requestState.SetRequestStream(requestState.Request.EndGetRequestStream(asynchronousResult));
+                requestState.SetRequestResponseFromResult(asynchronousResult);
             }
             catch (WebException e)
             {
@@ -422,7 +417,7 @@ namespace CloudinaryDotNet
 
             try
             {
-                requestState.SetResponse((HttpWebResponse)requestState.Request.EndGetResponse(asynchronousResult));
+                requestState.SetResponseFromResult(asynchronousResult);
             }
             catch (WebException e)
             {

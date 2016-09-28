@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
@@ -12,7 +11,7 @@ namespace CloudinaryDotNet
     {
         const string CL_BLANK = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
         static readonly string[] DEFAULT_VIDEO_SOURCE_TYPES = { "webm", "mp4", "ogv" };
-        static readonly Regex VIDEO_EXTENSION_RE = new Regex("\\.(" + String.Join("|", DEFAULT_VIDEO_SOURCE_TYPES) + ")$", RegexOptions.Compiled);
+        static readonly Regex VIDEO_EXTENSION_RE = new Regex("\\.(" + string.Join("|", DEFAULT_VIDEO_SOURCE_TYPES) + ")$", RegexOptions.Compiled);
 
         ISignProvider m_signProvider;
 
@@ -40,8 +39,8 @@ namespace CloudinaryDotNet
 
         string[] m_sourceTypes;
 
-        string m_action = String.Empty;
-        string m_resourceType = String.Empty;
+        string m_action = string.Empty;
+        string m_resourceType = string.Empty;
 
         Transformation m_transformation;
 
@@ -227,7 +226,7 @@ namespace CloudinaryDotNet
                 return PosterTransform((Transformation)poster);
             else if (poster == null || (poster is bool && !(bool)poster))
             {
-                PosterSource(String.Empty);
+                PosterSource(string.Empty);
                 PosterUrl(null);
                 PosterTransform(null);
             }
@@ -466,17 +465,17 @@ namespace CloudinaryDotNet
 
         public string BuildUrl(string source)
         {
-            if (String.IsNullOrEmpty(m_cloudName))
+            if (string.IsNullOrEmpty(m_cloudName))
                 throw new ArgumentException("cloudName must be specified!");
 
-            if (!m_usePrivateCdn && !String.IsNullOrEmpty(m_suffix))
+            if (!m_usePrivateCdn && !string.IsNullOrEmpty(m_suffix))
                 throw new NotSupportedException("URL Suffix only supported in private CDN!");
 
             if (source == null)
                 source = m_source;
 
             if (source == null)
-                source = String.Empty;
+                source = string.Empty;
 
             if (Regex.IsMatch(source.ToLower(), "^https?:/.*") &&
                 (m_action == "upload" || m_action == "asset"))
@@ -484,7 +483,7 @@ namespace CloudinaryDotNet
                 return source;
             }
 
-            if (m_action == "fetch" && !String.IsNullOrEmpty(FormatValue))
+            if (m_action == "fetch" && !string.IsNullOrEmpty(FormatValue))
             {
                 Transformation.FetchFormat(FormatValue);
                 FormatValue = null;
@@ -519,17 +518,17 @@ namespace CloudinaryDotNet
                 m_version = "1";
             }
 
-            var version = String.IsNullOrEmpty(m_version) ? String.Empty : String.Format("v{0}", m_version);
+            var version = string.IsNullOrEmpty(m_version) ? string.Empty : string.Format("v{0}", m_version);
 
             if (m_signed)
             {
                 if (m_signProvider == null)
                     throw new NullReferenceException("Reference to ISignProvider-compatible object must be provided in order to sign URI!");
 
-                var signedPart = String.Join("/", new string[] { transformationStr, src.SourceToSign });
-                signedPart = Regex.Replace(signedPart, "^/+", String.Empty);
+                var signedPart = string.Join("/", new string[] { transformationStr, src.SourceToSign });
+                signedPart = Regex.Replace(signedPart, "^/+", string.Empty);
                 signedPart = Regex.Replace(signedPart, "([^:])/{2,}", "$1/");
-                signedPart = Regex.Replace(signedPart, "/$", String.Empty);
+                signedPart = Regex.Replace(signedPart, "/$", string.Empty);
 
                 signedPart = m_signProvider.SignUriPart(signedPart);
                 urlParts.Add(signedPart);
@@ -539,9 +538,9 @@ namespace CloudinaryDotNet
             urlParts.Add(version);
             urlParts.Add(src.Source);
 
-            string uriStr = String.Join("/", urlParts.ToArray());
+            string uriStr = string.Join("/", urlParts.ToArray());
             uriStr = Regex.Replace(uriStr, "([^:])/{2,}", "$1/");
-            uriStr = Regex.Replace(uriStr, "/$", String.Empty);
+            uriStr = Regex.Replace(uriStr, "/$", string.Empty);
 
             return uriStr;
         }
@@ -558,7 +557,7 @@ namespace CloudinaryDotNet
             {
                 src = new CSource(Encode(Decode(source)));
 
-                if (!String.IsNullOrEmpty(m_suffix))
+                if (!string.IsNullOrEmpty(m_suffix))
                 {
                     if (Regex.IsMatch(m_suffix, "[\\./]"))
                         throw new ArgumentException("Suffix should not include . or /!");
@@ -566,7 +565,7 @@ namespace CloudinaryDotNet
                     src.Source += "/" + m_suffix;
                 }
 
-                if (!String.IsNullOrEmpty(FormatValue))
+                if (!string.IsNullOrEmpty(FormatValue))
                 {
                     src += "." + FormatValue;
                 }
@@ -593,7 +592,7 @@ namespace CloudinaryDotNet
                         "res.cloudinary.com",
                         "res-" + Shard(source) + ".cloudinary.com");
 
-                prefix = String.Format("https://{0}", privateCdn);
+                prefix = string.Format("https://{0}", privateCdn);
             }
             else
             {
@@ -603,13 +602,13 @@ namespace CloudinaryDotNet
                 }
                 else if (m_cName != null)
                 {
-                    string subDomain = m_useSubDomain ? "a" + Shard(source) + "." : String.Empty;
+                    string subDomain = m_useSubDomain ? "a" + Shard(source) + "." : string.Empty;
                     prefix = "http://" + subDomain + m_cName;
                 }
                 else
                 {
-                    string subDomain = m_useSubDomain ? "-" + Shard(source) : String.Empty;
-                    string host = (m_usePrivateCdn ? m_cloudName + "-" : String.Empty) + "res" + subDomain + ".cloudinary.com";
+                    string subDomain = m_useSubDomain ? "-" + Shard(source) : string.Empty;
+                    string host = (m_usePrivateCdn ? m_cloudName + "-" : string.Empty) + "res" + subDomain + ".cloudinary.com";
 
                     prefix = "http://" + host;
                 }
@@ -620,7 +619,7 @@ namespace CloudinaryDotNet
 
         private void UpdateAction()
         {
-            if (!String.IsNullOrEmpty(m_suffix))
+            if (!string.IsNullOrEmpty(m_suffix))
             {
                 if (m_resourceType == "image" && m_action == "upload")
                 {
@@ -641,10 +640,10 @@ namespace CloudinaryDotNet
             if (m_useRootPath)
             {
                 if (m_resourceType == "image" && m_action == "upload"
-                    || m_resourceType == "images" && String.IsNullOrEmpty(m_action))
+                    || m_resourceType == "images" && string.IsNullOrEmpty(m_action))
                 {
-                    m_resourceType = String.Empty;
-                    m_action = String.Empty;
+                    m_resourceType = string.Empty;
+                    m_action = string.Empty;
                 }
                 else
                 {
@@ -654,7 +653,7 @@ namespace CloudinaryDotNet
 
             if (m_shorten && m_resourceType == "image" && m_action == "upload")
             {
-                m_resourceType = String.Empty;
+                m_resourceType = string.Empty;
                 m_action = "iu";
             }
         }
@@ -699,7 +698,7 @@ namespace CloudinaryDotNet
                 if (!IsSafe(ch))
                 {
                     resultStr.Append('%');
-                    resultStr.Append(String.Format("{0:X2}", (short)ch));
+                    resultStr.Append(string.Format("{0:X2}", (short)ch));
                 }
                 else
                 {
@@ -733,7 +732,7 @@ namespace CloudinaryDotNet
             Url newUrl = (Url)this.MemberwiseClone();
 
             if (m_transformation != null)
-                newUrl.m_transformation = this.m_transformation.Clone();
+                newUrl.m_transformation = m_transformation.Clone();
 
             if (m_posterTransformation != null)
                 newUrl.m_posterTransformation = m_posterTransformation.Clone();
@@ -773,149 +772,5 @@ namespace CloudinaryDotNet
         }
 
         #endregion
-    }
-
-    public class UrlBuilder : UriBuilder
-    {
-        StringDictionary m_queryString = null;
-        private readonly IHttpContextAccessor m_contextAccessor;
-
-        public StringDictionary QueryString
-        {
-            get
-            {
-                if (m_queryString == null)
-                {
-                    m_queryString = new StringDictionary();
-                }
-
-                return m_queryString;
-            }
-        }
-
-        public string PageName
-        {
-            get
-            {
-                string path = base.Path;
-                return path.Substring(path.LastIndexOf("/") + 1);
-            }
-            set
-            {
-                string path = base.Path;
-                path = path.Substring(0, path.LastIndexOf("/"));
-                base.Path = string.Concat(path, "/", value);
-            }
-        }
-
-        public UrlBuilder(string uri, IHttpContextAccessor contextAccessor)
-            : base(uri)
-        {
-            PopulateQueryString();
-            m_contextAccessor = contextAccessor;
-        }
-
-        public UrlBuilder(string uri, IDictionary<string, object> @params, IHttpContextAccessor contextAccessor)
-            : base(uri)
-        {
-            PopulateQueryString();
-            SetParameters(@params);
-            m_contextAccessor = contextAccessor;
-        }
-
-        public void SetParameters(IDictionary<string, object> @params)
-        {
-            foreach (var param in @params)
-            {
-                if (param.Value is IEnumerable<string>)
-                {
-                    foreach (var s in (IEnumerable<string>)param.Value)
-                    {
-                        QueryString.Add(param.Key + "[]", s);
-                    }
-                }
-                else
-                {
-                    QueryString[param.Key] = param.Value.ToString();
-                }
-            }
-        }
-
-        public new string ToString()
-        {
-            BuildQueryString();
-
-            return base.Uri.AbsoluteUri;
-        }
-
-        public void Navigate()
-        {
-            _Navigate(true);
-        }
-
-        public void Navigate(bool endResponse)
-        {
-            _Navigate(endResponse);
-        }
-
-        private void _Navigate(bool endResponse)
-        {
-            string uri = this.ToString();
-            m_contextAccessor.HttpContext.Response.Redirect(uri, endResponse);
-        }
-
-        private void PopulateQueryString()
-        {
-            string query = base.Query;
-
-            if (query == string.Empty || query == null)
-            {
-                return;
-            }
-
-            if (m_queryString == null)
-            {
-                m_queryString = new StringDictionary();
-            }
-
-            m_queryString.Clear();
-
-            query = query.Substring(1); //remove the ?
-
-            string[] pairs = query.Split(new char[] { '&' });
-            foreach (string s in pairs)
-            {
-                string[] pair = s.Split(new char[] { '=' });
-
-                m_queryString[pair[0]] = (pair.Length > 1) ? pair[1] : string.Empty;
-            }
-        }
-
-        private void BuildQueryString()
-        {
-            if (m_queryString == null) return;
-
-            int count = m_queryString.Count;
-
-            if (count == 0)
-            {
-                base.Query = string.Empty;
-                return;
-            }
-
-            string[] keys = new string[count];
-            string[] values = new string[count];
-            string[] pairs = new string[count];
-
-            m_queryString.Keys.CopyTo(keys, 0);
-            m_queryString.Values.CopyTo(values, 0);
-
-            for (int i = 0; i < count; i++)
-            {
-                pairs[i] = string.Concat(keys[i], "=", values[i]);
-            }
-
-            base.Query = string.Join("&", pairs);
-        }
     }
 }

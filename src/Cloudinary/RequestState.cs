@@ -10,13 +10,13 @@ namespace CloudinaryDotNet
     /// </summary>
     internal class RequestState : IDisposable
     {
-        #region Properties
+        #region Internal Properties
         private readonly HttpWebRequest _request;
         private HttpWebResponse _response;
         private Stream _streamResponse;
         private readonly ManualResetEvent _streamDone = new ManualResetEvent(false);
         private readonly ManualResetEvent _responseDone = new ManualResetEvent(false);
-        #endregion Properties
+        #endregion Internal Properties
 
         public RequestState(HttpWebRequest request)
         {
@@ -24,12 +24,16 @@ namespace CloudinaryDotNet
             _streamResponse = null;
         }
 
-        public HttpWebRequest Request { get { return _request; } }
-
-        public void SetRequestStream(Stream stream)
+        public void SetRequestResponseFromResult(IAsyncResult asynchronousResult)
         {
-            _streamResponse = stream;
+            _streamResponse = _request.EndGetRequestStream(asynchronousResult);
             _streamDone.Set();
+        }
+
+        public void SetResponseFromResult(IAsyncResult asynchronousResult)
+        {
+            var response = (HttpWebResponse)_request.EndGetResponse(asynchronousResult);
+            SetResponse(response);
         }
 
         public void SetResponse(HttpWebResponse response)
@@ -50,9 +54,9 @@ namespace CloudinaryDotNet
         /// <summary>
         /// Wait for the request stream
         /// </summary>
-        /// <param name="timeout"></param>
+        /// <param name="timeout">The time to wait.</param>
         /// <returns></returns>
-        public Stream WaitForStream(int timeout)
+        public Stream WaitForRequestStream(int timeout)
         {
             if (timeout > 0)
             {
