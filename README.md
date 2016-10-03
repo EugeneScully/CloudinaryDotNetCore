@@ -4,10 +4,16 @@ Cloudinary
 
 .Net Core implementation of the CloudinaryAPI library
 
-## Project Status
-It still needs a work and a tidy up - I've hacked something together to get unit & integration tests passing and the basics working
+This was forked from cloudinary/CloudinaryDotNet to add cloudinary.com support for .NET Core
 
-- All xunit tests should pass now
+
+
+## Project Status
+
+Basics look like they work, but I haven't tested extensively
+
+I've move the unit tests to xunit (which is supported in .NET core), and it looks like they are passing
+
 
 ## Setup
 To run xunit tests, edit the 'launchSettings.json' file and add Cloudinary account information
